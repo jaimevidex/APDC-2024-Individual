@@ -1,7 +1,7 @@
 package pt.unl.fct.di.apdc.firstwebapp.resources;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.google.cloud.datastore.*;
+import org.apache.commons.codec.digest.DigestUtils;
 import pt.unl.fct.di.apdc.firstwebapp.util.RegisterData;
 
 import javax.ws.rs.Consumes;
@@ -22,7 +22,7 @@ public class RegisterResource {
 
     public RegisterResource() {}
     @POST
-    @Path("/v1")
+    @Path("/")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response doRegister(RegisterData data) {
 
@@ -42,16 +42,20 @@ public class RegisterResource {
                 return badRequestMessage("Essa conta já existe, por favor faça login!");
             }
             else {
-                String hashedString = BCrypt.withDefaults().hashToString(12, data.password.toCharArray());
-
+                String hashedString = DigestUtils.sha512Hex(data.password);
+                boolean active = false;
+                String role = "USER";
+                if (data.username.equals("root")) {
+                    active = true;
+                    role = "SU";
+                }
                 user = Entity.newBuilder(userKey)
-                        .set("user_username", data.username)
                         .set("user_email", data.email)
                         .set("user_name", data.name)
                         .set("user_phone", data.phone)
                         .set("user_pwd", hashedString)
-                        .set("ROLE", "USER")
-                        .set("ESTADO", "INATIVO")
+                        .set("user_role", role)
+                        .set("user_active", active)
                         .build();
 
                 txn.add(user);
@@ -62,7 +66,6 @@ public class RegisterResource {
         } finally {
             if (txn.isActive()) {
                 txn.rollback();
-                return badRequestMessage("Something went wrong!");
             }
         }
     }

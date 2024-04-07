@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Login and Register</title>
 </head>
 <body>
-Back to main page <a href="index.html">here</a>
+Back to main page <a href="../index.html">here</a>
 <p></p>
 <h1>Welcome!</h1>
 <div class="container">
-    <form action="/rest/login" method="post">
-        <h2>Login</h2>
+    <h2>Login</h2>
+    <form id="formLogin">
         <label for="username">Username:</label>
         <input type="text" name="username" id="username" required> <br><br>
         <label for="password">Password:</label>
@@ -22,4 +23,36 @@ Back to main page <a href="index.html">here</a>
     If you don't have an account please register <a href="register.html">here</a>
 </div>
 </body>
+<script>
+    const forms = document.getElementById("formLogin");
+
+    forms.addEventListener("submit", event=> {
+        event.preventDefault();
+
+        const username = document.getElementById("username").value.trim();
+        const password = document.getElementById("password").value.trim();
+
+        const data = {
+            username,
+            password
+        };
+
+        fetch('https://my-individual-project-418618.oa.r.appspot.com/rest/login/', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json' // Set content type header
+            },
+            body: JSON.stringify(data) // Stringify data object for request body
+        }).then(response => {
+            if (!response.ok) {
+                throw new Error(`Login  failed with status ${response.status}`);
+            }
+            return response.json(); // Parse JSON response data
+        }).then(responseData => {
+            console.log("Login successful:", responseData);
+            localStorage.setItem('token', JSON.stringify(responseData));
+            window.location.href = "../pages/profile.html"; // Redirect to login page
+        })
+    });
+</script>
 </html>

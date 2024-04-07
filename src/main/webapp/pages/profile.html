@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+</head>
+<body>
+<h1>User Profile</h1>
+<hr>
+
+<h2>User Details</h2>
+<ul>
+    <li id="userName">Name: </li>
+</ul>
+
+<h2>Available Operations</h2>
+<button id="changeRoleButton">Change Role</button>
+<div id="roleDiv" style="display: none">
+</div> <br>
+<button id="changeStateButton">Change State</button>
+<div id="stateDiv" style="display: none">
+</div> <br>
+<button id="removeUserButton">Remove User</button>
+<div id="removeDiv" style="display: none">
+</div> <br>
+<button id="listUsersButton">List Users</button>
+<div id="listDiv" style="display: none">
+</div> <br>
+<button id="changeDetailsButton">Change Account Attributes</button>
+<div id="detailsDiv" style="display: none">
+</div> <br>
+<button id="changePasswordButton">Change Password</button>
+<div id="passwordDiv" style="display: none">
+</div> <br>
+<button id="showTokenButton">Show Token</button>
+<div id="showDiv" style="display: none">
+</div> <br>
+<button id="logoutButton">Logout</button>
+<div id="logoutDiv" style="display: none">
+</div>
+
+<script>
+    function formatDate(currentTimeMillis) {
+        const date = new Date(currentTimeMillis);
+        return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    }
+
+    function fetchUserData() {
+        // Fetch user data from your backend or storage
+        const data = JSON.parse(localStorage.getItem("token"));
+
+        document.getElementById("userName").textContent = `Name: ${data.username}`;
+    }
+
+    fetchUserData();
+
+    const changeRoleButton = document.getElementById("changeRoleButton");
+    changeRoleButton.addEventListener("click", event => {
+        event.preventDefault();
+
+        const roleDiv = document.getElementById("roleDiv");
+        roleDiv.innerHTML = "";
+
+        if (roleDiv.style.display === "none") {
+            roleDiv.style.display = "block";
+
+            const username = document.createElement("input");
+            username.placeholder = "username of the user to change";
+            username.id = "username";
+            const role = document.createElement("input");
+            role.placeholder = "role to change to";
+            role.id = "role";
+            const button = document.createElement("button");
+            button.textContent = "Change";
+            button.id = "submitButton";
+            roleDiv.appendChild(username);
+            roleDiv.appendChild(role);
+            roleDiv.appendChild(button);
+
+            const submitButton = document.getElementById("submitButton");
+            submitButton.addEventListener("click", event => {
+                event.preventDefault();
+
+                const username = JSON.parse(localStorage.getItem("token")).username;
+                const expirationDate = JSON.parse(localStorage.getItem("token")).expirationDate;
+                const usernameDestiny = document.getElementById("username").value.trim();
+                const role = document.getElementById("role").value.trim();
+
+                const data = {
+                    username,
+                    expirationDate,
+                    usernameDestiny,
+                    role
+                };
+
+                fetch('https://my-individual-project-418618.oa.r.appspot.com/rest/change/role', {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json' // Set content type header
+                    },
+                    body: JSON.stringify(data) // Stringify data object for request body
+                })
+            });
+        } else {
+            roleDiv.style.display = "none";
+        }
+    });
+    const changeStateButton = document.getElementById("changeStateButton");
+    changeStateButton.addEventListener("click", event => {
+        event.preventDefault();
+
+        const stateDiv = document.getElementById("stateDiv");
+        stateDiv.innerHTML = "";
+
+        if (stateDiv.style.display === "none") {
+            stateDiv.style.display = "block";
+
+            const username = document.createElement("input");
+            username.placeholder = "username of the user to change";
+            username.id = "username";
+            const button = document.createElement("button");
+            button.textContent = "Activate/Deactivate";
+            button.id = "submitButton";
+            stateDiv.appendChild(username);
+            stateDiv.appendChild(button);
+
+            const submitButton = document.getElementById("submitButton");
+            submitButton.addEventListener("click", event => {
+                event.preventDefault();
+
+                const username = JSON.parse(localStorage.getItem("token")).username;
+                const expirationDate = JSON.parse(localStorage.getItem("token")).expirationDate;
+                const usernameDestiny = document.getElementById("username").value.trim();
+
+                const data = {
+                    username,
+                    expirationDate,
+                    usernameDestiny
+                };
+
+                fetch('https://my-individual-project-418618.oa.r.appspot.com/rest/change/state', {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json' // Set content type header
+                    },
+                    body: JSON.stringify(data) // Stringify data object for request body
+                })
+            });
+        } else {
+            stateDiv.style.display = "none";
+        }
+    });
+    const removeUserButton = document.getElementById("removeUserButton");
+    removeUserButton.addEventListener("click", event => {
+        event.preventDefault();
+
+        const removeDiv = document.getElementById("removeDiv");
+        removeDiv.innerHTML = "";
+
+        if (removeDiv.style.display === "none") {
+            removeDiv.style.display = "block";
+
+            const username = document.createElement("input");
+            username.placeholder = "username to remove";
+            username.id = "username";
+            const button = document.createElement("button");
+            button.textContent = "Delete";
+            button.id = "submitButton";
+            removeDiv.appendChild(username);
+            removeDiv.appendChild(button);
+
+            const submitButton = document.getElementById("submitButton");
+            submitButton.addEventListener("click", event => {
+                event.preventDefault();
+
+                const username = JSON.parse(localStorage.getItem("token")).username;
+                const expirationDate = JSON.parse(localStorage.getItem("token")).expirationDate;
+                const usernameDestiny = document.getElementById("username").value.trim();
+
+                const data = {
+                    username,
+                    expirationDate
+                };
+
+                fetch(`https://my-individual-project-418618.oa.r.appspot.com/rest/remove/${usernameDestiny}`, {
+                    method: "DELETE",
+                    headers: {
+                        'Content-Type': 'application/json' // Set content type header
+                    },
+                    body: JSON.stringify(data) // Stringify data object for request body
+                }).then(response => {
+                    if (response.ok) {
+                        console.log("User deleted successfully!");
+                        if (username===(usernameDestiny)) {
+                            window.location.href = "../pages/login.html";
+                            localStorage.clear();
+                        }
+                    } else {
+                        console.error("Error deleting user:", response.statusText);
+                    }
+                })
+            });
+        } else {
+            removeDiv.style.display = "none";
+        }
+    });
+    const listUsersButton = document.getElementById("listUsersButton");
+    listUsersButton.addEventListener("click", event => {
+
+    });
+    const changeDetailsButton = document.getElementById("changeDetailsButton");
+    changeDetailsButton.addEventListener("click", event => {
+
+    });
+    const changePasswordButton = document.getElementById("changePasswordButton");
+    changePasswordButton.addEventListener("click", event => {
+        event.preventDefault();
+
+        const passwordDiv = document.getElementById("passwordDiv");
+        passwordDiv.innerHTML = "";
+
+        if (passwordDiv.style.display === "none") {
+            passwordDiv.style.display = "block";
+
+            const oldPassword = document.createElement("input");
+            oldPassword.placeholder = "old password";
+            oldPassword.id = "oldPassword";
+            oldPassword.type = "password";
+            const password = document.createElement("input");
+            password.placeholder = "new password";
+            password.id = "password";
+            password.type = "password";
+            const confirmPassword = document.createElement("input");
+            confirmPassword.placeholder = "new password confirmation";
+            confirmPassword.id = "confirmPassword";
+            confirmPassword.type = "password";
+            const button = document.createElement("button");
+            button.textContent = "Change";
+            button.id = "submitButton";
+
+            passwordDiv.appendChild(oldPassword);
+            passwordDiv.appendChild(password);
+            passwordDiv.appendChild(confirmPassword);
+            passwordDiv.appendChild(button);
+
+            const submitButton = document.getElementById("submitButton");
+            submitButton.addEventListener("click", event => {
+                event.preventDefault();
+
+                const username = JSON.parse(localStorage.getItem("token")).username;
+                const expirationDate = JSON.parse(localStorage.getItem("token")).expirationDate;
+                const oldPassword = document.getElementById("oldPassword").value.trim();
+                const password = document.getElementById("password").value.trim();
+                const confirmPassword = document.getElementById("confirmPassword").value.trim();
+
+                const data = {
+                    username,
+                    expirationDate,
+                    oldPassword,
+                    password,
+                    confirmPassword,
+                };
+
+                fetch('https://my-individual-project-418618.oa.r.appspot.com/rest/change/password', {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json' // Set content type header
+                    },
+                    body: JSON.stringify(data) // Stringify data object for request body
+                })
+            });
+        } else {
+            passwordDiv.style.display = "none";
+        }
+    });
+    const showTokenButton = document.getElementById("showTokenButton");
+    showTokenButton.addEventListener("click", event => {
+        event.preventDefault();
+
+        const showDiv = document.getElementById("showDiv");
+
+        showDiv.innerHTML = "";
+
+        if (showDiv.style.display === "none") {
+            showDiv.style.display = "block";
+
+            const data = JSON.parse(localStorage.getItem("token"));
+            const tokenP = document.createElement("h4");
+            tokenP.textContent = "Token ID: " + data.tokenID;
+            const username = document.createElement("h4");
+            username.textContent = "Username: " + data.username;
+            const creatDate = document.createElement("h4");
+            creatDate.textContent = "Creation Date: " + formatDate(data.creationDate);
+            const expDate = document.createElement("h4");
+            expDate.textContent = "Expiration Date: " + formatDate(data.expirationDate);
+
+            showDiv.appendChild(tokenP);
+            showDiv.appendChild(username);
+            showDiv.appendChild(creatDate);
+            showDiv.appendChild(expDate);
+        } else {
+            showDiv.style.display = "none";
+        }
+    });
+    const logoutButton = document.getElementById("logoutButton");
+    logoutButton.addEventListener("click", event => {
+
+    });
+
+</script>
+
+</body>
+</html>

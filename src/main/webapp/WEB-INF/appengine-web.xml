@@ -9,9 +9,9 @@
   </system-properties>
 
   <static-files>
-    <include path="/**.html" expiration="1m" /> <!-- 1 minute, normal is 12h or more -->
+    <include path="/**.html" expiration="1m"/> <!-- 1 minute, normal is 12h or more -->
     <include path="/**.css" expiration="1m" />  <!-- 1 minute, normal is 12h or more -->
-    <include path="/**.js"  expiration="1m" />  <!-- 1 minute, normal is 12h or more -->
+    <include path="/**.js" expiration="1m"/>  <!-- 1 minute, normal is 12h or more -->
     <include path="/**.jpg" expiration="1m" />  <!-- 1 minute, normal is 12h or more -->
     <include path="/**.gif" expiration="1m" />  <!-- 1 minute, normal is 12h or more -->
     <include path="/**.png" expiration="1m" />  <!-- 1 minute, normal is 12h or more -->

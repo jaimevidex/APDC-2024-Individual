@@ -43,7 +43,7 @@ public class RemoveUserResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity("You don't have the permissions to do that!").build();
             } else {
                 Query<Entity> childQuery = Query.newEntityQueryBuilder()
-                        .setKind("Token") // Replace with your child entity kind
+                        .setKind("Token")
                         .setFilter(StructuredQuery.PropertyFilter.hasAncestor(userKey))
                         .build();
                 QueryResults<Entity> childResults = datastore.run(childQuery);

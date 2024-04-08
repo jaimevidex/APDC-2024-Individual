@@ -25,6 +25,24 @@ Back to login page <a href="login.html">here</a>
         <input type="password" name="password" id="password" required> <br>
         <label for="passwordConfirmation">Password Confirmation:</label>
         <input type="password" name="passwordConfirmation" id="passwordConfirmation" required> <br>
+        <h4>Estes campos são opcionais!</h4>
+        <label for="perfil">Perfil:</label>
+        <select name="perfil" id="perfil">
+            <option value="true">Público</option>
+            <option value="false">Privado</option>
+        </select> <br><br>
+        <label for="ocupacao">Ocupação:</label>
+        <input value="" type="text" name="ocupacao" id="ocupacao"> <br><br>
+        <label for="local_trabalho">Local de Trabalho:</label>
+        <input value="" type="text" name="local_trabalho" id="local_trabalho"> <br><br>
+        <label for="morada">Morada:</label>
+        <input value="" type="text" name="morada" id="morada"> <br><br>
+        <label for="codigo_postal">Código Postal:</label>
+        <input value="" type="text" name="codigo_postal" id="codigo_postal"> <br><br>
+        <label for="nif">NIF:</label>
+        <input value="" type="text" name="nif" id="nif"> <br><br>
+        <label for="foto">Foto:</label>
+        <input value="" type="url" name="foto" id="foto"> <br><br>
         <button type="submit">Register</button>
     </form>
 </div>
@@ -42,19 +60,34 @@ Back to login page <a href="login.html">here</a>
         const password = document.getElementById("password").value.trim();
         const passwordConfirmation = document.getElementById("passwordConfirmation").value.trim();
 
+        const isPublic = document.getElementById("perfil").value;
+        const occupation = document.getElementById("ocupacao").value.trim();
+        const workspace = document.getElementById("local_trabalho").value.trim();
+        const address = document.getElementById("morada").value.trim();
+        const zip = document.getElementById("codigo_postal").value.trim();
+        const nif = document.getElementById("nif").value.trim();
+        const photo = document.getElementById("foto").value.trim();
+
         const data = {
             username,
             email,
             name,
             phone,
             password,
-            passwordConfirmation
+            passwordConfirmation,
+            isPublic,
+            occupation,
+            workspace,
+            address,
+            zip,
+            nif,
+            photo
         };
 
-        fetch('https://my-individual-project-418618.oa.r.appspot.com/rest/register/', {
+        fetch('/rest/register/', {
             method: "POST",
             headers: {'Content-Type': 'application/json;'},
-            body: JSON.stringify(data) // Stringify data object for request body
+            body: JSON.stringify(data)
         }).then(response => {
             if (!response.ok) {
                 throw new Error(`Registration failed with status ${response.status}`);

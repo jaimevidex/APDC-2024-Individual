@@ -2,18 +2,27 @@ package pt.unl.fct.di.apdc.firstwebapp.util;
 
 public class RegisterData {
 
-    public String username,email,name,phone,password,passwordConfirmation;
+    public String username,email,name,phone,password,passwordConfirmation,occupation,workspace, address, zip, nif, photo;
+    public boolean isPublic;
     public RegisterData() {
     }
 
     public RegisterData(String username, String email, String name, String phone, String password, 
-                        String passwordConfirmation) {
+                        String passwordConfirmation, boolean isPublic, String occupation, String workspace,
+                        String address, String zip, String nif, String photo) {
         this.username = username;
         this.email = email;
         this.name = name;
         this.phone = phone;
-        this.passwordConfirmation = passwordConfirmation;
         this.password = password;
+        this.passwordConfirmation = passwordConfirmation;
+        this.isPublic = isPublic;
+        this.occupation = occupation;
+        this.workspace = workspace;
+        this.address = address;
+        this.zip = zip;
+        this.nif = nif;
+        this.photo = photo;
     }
 
     public boolean isDataValid() {

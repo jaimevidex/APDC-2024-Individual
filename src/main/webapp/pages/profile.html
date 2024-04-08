@@ -6,6 +6,7 @@
     <title>User Profile</title>
 </head>
 <body>
+Back to login page <a href="../pages/login.html">here</a> <br>
 <h1>User Profile</h1>
 <hr>
 
@@ -24,7 +25,7 @@
 <button id="removeUserButton">Remove User</button>
 <div id="removeDiv" style="display: none">
 </div> <br>
-<button id="listUsersButton">List Users</button>
+<button id="listUsersButton">List Users (Hide)</button>
 <div id="listDiv" style="display: none">
 </div> <br>
 <button id="changeDetailsButton">Change Account Attributes</button>
@@ -41,15 +42,43 @@
 </div>
 
 <script>
+    function displayUsers(usersData) {
+        const listDiv = document.getElementById("listDiv");
+        listDiv.innerHTML = ""; // Clear any existing content
+
+        if (listDiv.style.display === "none") {
+            listDiv.style.display = "block";
+
+            let userCount = 0;
+            for (const user of usersData) {
+                const userElement = document.createElement("div");
+                if (!user.role){
+                    userElement.textContent = `Username: ${user.username} | Email: ${user.email} | Name: ${user.name}`;
+                } else {
+                    userElement.textContent = `Username: ${user.username} | Email: ${user.email} | Name: ${user.name}
+                        Phone: ${user.phone} | Public: ${user.isPublic} | Occupation: ${user.occupation}
+                        Workspace: ${user.workspace} | Address: ${user.address} | Zipcode: ${user.zip}
+                        NIF: ${user.nif} | Role: ${user.role} | Active: ${user.active} | Photo: ${user.photo}`;
+                }
+                listDiv.appendChild(userElement);
+                userCount++;
+            }
+        } else {
+            listDiv.style.display = "none";
+        }
+
+    }
+
     function formatDate(currentTimeMillis) {
         const date = new Date(currentTimeMillis);
         return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
     }
 
     function fetchUserData() {
-        // Fetch user data from your backend or storage
+        if (JSON.parse(localStorage.getItem("token"))===null) {
+            window.location.href="../pages/login.html";
+        }
         const data = JSON.parse(localStorage.getItem("token"));
-
         document.getElementById("userName").textContent = `Name: ${data.username}`;
     }
 
@@ -94,7 +123,7 @@
                     role
                 };
 
-                fetch('https://my-individual-project-418618.oa.r.appspot.com/rest/change/role', {
+                fetch('/rest/change/role', {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json' // Set content type header
@@ -139,7 +168,7 @@
                     usernameDestiny
                 };
 
-                fetch('https://my-individual-project-418618.oa.r.appspot.com/rest/change/state', {
+                fetch('/rest/change/state', {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json' // Set content type header
@@ -183,7 +212,7 @@
                     expirationDate
                 };
 
-                fetch(`https://my-individual-project-418618.oa.r.appspot.com/rest/remove/${usernameDestiny}`, {
+                fetch(`/rest/remove/${usernameDestiny}`, {
                     method: "DELETE",
                     headers: {
                         'Content-Type': 'application/json' // Set content type header
@@ -207,11 +236,176 @@
     });
     const listUsersButton = document.getElementById("listUsersButton");
     listUsersButton.addEventListener("click", event => {
+        event.preventDefault();
 
+        const username = JSON.parse(localStorage.getItem("token")).username;
+        const expirationDate = JSON.parse(localStorage.getItem("token")).expirationDate;
+
+        fetch("/rest/list", {
+            method: "GET", // Adjust method if needed (e.g., POST)
+            headers: {
+                "Content-Type": "application/json",
+                "username": username,
+                "expirationDate": expirationDate
+            }
+        })
+            .then(response => response.json()) // Parse the JSON response
+            .then(data => {
+                console.log(data); // Example: log the data to the console
+                displayUsers(data); // Call your desired method with the data
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+            });
     });
     const changeDetailsButton = document.getElementById("changeDetailsButton");
     changeDetailsButton.addEventListener("click", event => {
+        event.preventDefault();
 
+        const detailsDiv = document.getElementById("detailsDiv");
+        detailsDiv.innerHTML = "";
+
+        if (detailsDiv.style.display === "none") {
+            detailsDiv.style.display = "block";
+
+            const username = document.createElement("input");
+            username.placeholder = "username to change";
+            username.id = "username";
+            detailsDiv.appendChild(username);
+            detailsDiv.appendChild(document.createElement("br"));
+            const fieldTypes = ["email", "text", "tel", "select", "text", "text", "text", "text", "text", "select", "select", "text"];
+            const fieldIds = ["email", "name", "phone", "profile", "occupation", "workspace", "address", "zip", "nif", "role", "active", "photo"];
+            for (let i = 0; i < fieldTypes.length; i++) {
+                const div = document.createElement("div");
+
+                if (fieldIds[i]==="profile") {
+                    const select = document.createElement("select");
+                    select.id=fieldIds[i];
+                    const option = document.createElement("option");
+                    option.value = "";
+                    option.textContent = "";
+                    const option1 = document.createElement("option");
+                    option1.value = "true";
+                    option1.textContent = "Public";
+                    const option2 = document.createElement("option");
+                    option2.value = "false";
+                    option2.textContent = "Private";
+                    select.appendChild(option1);
+                    select.appendChild(option2);
+                    div.appendChild(select);
+                } else if (fieldIds[i]==="role") {
+                    const select = document.createElement("select");
+                    select.id=fieldIds[i];
+                    const option = document.createElement("option");
+                    option.value = "";
+                    option.textContent = "";
+                    const option1 = document.createElement("option");
+                    option1.value = "USER";
+                    option1.textContent = "USER";
+                    const option2 = document.createElement("option");
+                    option2.value = "GBO";
+                    option2.textContent = "GBO";
+                    const option3 = document.createElement("option");
+                    option3.value = "GA";
+                    option3.textContent = "GA";
+                    const option4 = document.createElement("option");
+                    option4.value = "SU";
+                    option4.textContent = "SU";
+                    select.appendChild(option);
+                    select.appendChild(option1);
+                    select.appendChild(option2);
+                    select.appendChild(option3);
+                    select.appendChild(option4);
+                    div.appendChild(select);
+                } else if (fieldIds[i]==="active") {
+                    const select = document.createElement("select");
+                    select.id=fieldIds[i];
+                    const option = document.createElement("option");
+                    option.value = "";
+                    option.textContent = "";
+                    const option1 = document.createElement("option");
+                    option1.value = "true";
+                    option1.textContent = "Activate";
+                    const option2 = document.createElement("option");
+                    option2.value = "false";
+                    option2.textContent = "Deactivate";
+                    select.appendChild(option1);
+                    select.appendChild(option2);
+                    div.appendChild(select)
+                } else {
+                    const input = document.createElement("input");
+                    input.placeholder = fieldIds[i];
+                    input.type = fieldTypes[i];
+                    input.id= fieldIds[i];
+                    div.appendChild(input);
+                }
+
+                detailsDiv.appendChild(div);
+                if (i < fieldTypes.length - 1) {
+                    detailsDiv.appendChild(document.createElement("br"));
+                }
+            }
+
+            const button = document.createElement("button");
+            button.textContent = "Change";
+            button.id = "submitButton";
+            detailsDiv.appendChild(button);
+
+            const submitButton = document.getElementById("submitButton");
+            submitButton.addEventListener("click", event => {
+                event.preventDefault();
+
+                const username = JSON.parse(localStorage.getItem("token")).username;
+                const expirationDate = JSON.parse(localStorage.getItem("token")).expirationDate;
+                const usernameDestiny = document.getElementById("username").value;
+                const user_email = document.getElementById("email").value;
+                const user_name = document.getElementById("name").value;
+                const user_phone = document.getElementById("phone").value;
+                const user_public = document.getElementById("profile").value;
+                const user_occupation = document.getElementById("occupation").value;
+                const user_workspace = document.getElementById("workspace").value;
+                const user_address = document.getElementById("address").value;
+                const user_zip = document.getElementById("zip").value;
+                const user_nif = document.getElementById("nif").value;
+                const user_role = document.getElementById("role").value;
+                const user_active = document.getElementById("active").value;
+                const user_photo = document.getElementById("photo")
+
+                const data = {
+                    username,
+                    expirationDate,
+                    usernameDestiny,
+                    user_email,
+                    user_name,
+                    user_phone,
+                    user_public,
+                    user_occupation,
+                    user_workspace,
+                    user_address,
+                    user_zip,
+                    user_nif,
+                    user_role,
+                    user_active,
+                    user_photo
+                };
+
+                fetch(`/rest/change/attributes`, {
+                    method: "PUT",
+                    headers: {
+                        'Content-Type': 'application/json' // Set content type header
+                    },
+                    body: JSON.stringify(data) // Stringify data object for request body
+                }).then(response => response.json()) // Parse response as JSON if successful
+                    .then(data => {
+                        console.log("Update response:", data);
+                    })
+                    .catch(error => {
+                        console.error("Error updating user details:", error);
+                    });
+            });
+        } else {
+            detailsDiv.style.display = "none"
+        }
     });
     const changePasswordButton = document.getElementById("changePasswordButton");
     changePasswordButton.addEventListener("click", event => {
@@ -262,7 +456,7 @@
                     confirmPassword,
                 };
 
-                fetch('https://my-individual-project-418618.oa.r.appspot.com/rest/change/password', {
+                fetch('/rest/change/password', {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json' // Set content type header
@@ -305,7 +499,31 @@
     });
     const logoutButton = document.getElementById("logoutButton");
     logoutButton.addEventListener("click", event => {
+        event.preventDefault();
 
+        const expirationDate = JSON.parse(localStorage.getItem("token")).expirationDate;
+        const username = JSON.parse(localStorage.getItem("token")).username;
+
+        const data = {
+            username,
+            expirationDate
+        }
+
+        fetch('/rest/logout', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json' // Set content type header
+            },
+            body: JSON.stringify(data) // Stringify data object for request body
+        }).then(response => {
+            if (response.ok) {
+                console.log("User deleted successfully!");
+                window.location.href = "../pages/login.html";
+                localStorage.clear();
+            } else {
+                console.error("Error deleting user:", response.statusText);
+            }
+        })
     });
 
 </script>

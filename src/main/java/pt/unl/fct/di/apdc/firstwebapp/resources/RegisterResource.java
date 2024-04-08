@@ -54,8 +54,15 @@ public class RegisterResource {
                         .set("user_name", data.name)
                         .set("user_phone", data.phone)
                         .set("user_pwd", hashedString)
+                        .set("user_public", data.isPublic)
+                        .set("user_occupation", data.occupation)
+                        .set("user_workspace", data.workspace)
+                        .set("user_address", data.address)
+                        .set("user_zip", data.zip)
+                        .set("user_nif", data.nif)
                         .set("user_role", role)
                         .set("user_active", active)
+                        .set("user_photo", data.photo)
                         .build();
 
                 txn.add(user);

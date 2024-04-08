@@ -22,7 +22,7 @@ public class ChangeResource {
     private static final Logger LOG = Logger.getLogger(LoginResource.class.getName());
     public ChangeResource() {}
 
-    @POST
+    @PUT
     @Path("/role")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response changeRole(ChangeRoleData data) {
@@ -72,7 +72,7 @@ public class ChangeResource {
         }
     }
 
-    @POST
+    @PUT
     @Path("/state")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response changeState(ChangeStateData data){
@@ -119,7 +119,7 @@ public class ChangeResource {
         }
     }
 
-    @POST
+    @PUT
     @Path("/password")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response changePassword(ChangePasswordData data){

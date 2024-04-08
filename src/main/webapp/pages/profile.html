@@ -138,7 +138,7 @@ Back to login page <a href="../pages/login.html">here</a> <br>
                 };
 
                 fetch('/rest/change/role', {
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         'Content-Type': 'application/json' // Set content type header
                     },
@@ -183,7 +183,7 @@ Back to login page <a href="../pages/login.html">here</a> <br>
                 };
 
                 fetch('/rest/change/state', {
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         'Content-Type': 'application/json' // Set content type header
                     },
@@ -256,7 +256,7 @@ Back to login page <a href="../pages/login.html">here</a> <br>
         const expirationDate = JSON.parse(localStorage.getItem("token")).expirationDate;
 
         fetch("/rest/list", {
-            method: "GET", // Adjust method if needed (e.g., POST)
+            method: "GET",
             headers: {
                 "Content-Type": "application/json",
                 "username": username,
@@ -471,7 +471,7 @@ Back to login page <a href="../pages/login.html">here</a> <br>
                 };
 
                 fetch('/rest/change/password', {
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         'Content-Type': 'application/json' // Set content type header
                     },

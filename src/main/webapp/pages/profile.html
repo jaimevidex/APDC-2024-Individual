@@ -52,15 +52,29 @@ Back to login page <a href="../pages/login.html">here</a> <br>
             let userCount = 0;
             for (const user of usersData) {
                 const userElement = document.createElement("div");
+                const divImage = document.createElement("div")
+                userElement.style.display= "inline-block";
                 if (!user.role){
                     userElement.textContent = `Username: ${user.username} | Email: ${user.email} | Name: ${user.name}`;
+                    listDiv.appendChild(userElement);
                 } else {
                     userElement.textContent = `Username: ${user.username} | Email: ${user.email} | Name: ${user.name}
                         Phone: ${user.phone} | Public: ${user.isPublic} | Occupation: ${user.occupation}
                         Workspace: ${user.workspace} | Address: ${user.address} | Zipcode: ${user.zip}
-                        NIF: ${user.nif} | Role: ${user.role} | Active: ${user.active} | Photo: ${user.photo}`;
+                        NIF: ${user.nif} | Role: ${user.role} | Active: ${user.active}`;
+                    listDiv.appendChild(userElement);
+                    userElement.appendChild(document.createElement("br"));
+                    const image = document.createElement("img");
+                    image.src=user.photo;
+                    image.style.width="10%";
+                    image.style.aspectRatio="1";
+                    image.style.display= "inline-block";
+                    divImage.appendChild(image)
+                    listDiv.appendChild(divImage);
                 }
+                userElement.style.display= "inline-block";
                 listDiv.appendChild(userElement);
+                listDiv.style.display = "inline-block";
                 userCount++;
             }
         } else {

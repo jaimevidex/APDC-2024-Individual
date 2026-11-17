@@ -1,8 +1,7 @@
-# APDC 2024 — Individual Project
+# App Engine User Management
 
 A small but complete **Java web application** deployed on Google App Engine: registration, authentication with session tokens, role management, and an admin surface for managing users.
 
-Built for the *Aplicações para a Programação de Dispositivos e Comunicações* course at Instituto Superior Técnico.
 
 ## Features
 
@@ -40,7 +39,7 @@ mvn appengine:deploy        # deploy to App Engine
 
 ## A note on scope
 
-This was an individual assignment, so the surface is intentionally small. It is also **not production-hardened**: passwords use fast SHA-512 rather than a memory-hard KDF, tokens do not rotate, and there is no rate limiting. It is here as a demonstration of servlet/JAX-RS structure and Datastore modelling, not as a template to deploy.
+The scope is intentionally small. It is also **not production-hardened**: passwords use fast SHA-512 rather than a memory-hard KDF, tokens do not rotate, and there is no rate limiting. It is here as a demonstration of servlet/JAX-RS structure and Datastore modelling, not as a template to deploy.
 
 ## Contents
 
@@ -48,5 +47,5 @@ This was an individual assignment, so the surface is intentionally small. It is 
 |---|---|
 | `src/` | Application source |
 | `pom.xml` | Build and deployment configuration |
-| `Guia-Avaliacao-Individual.pdf` | Assignment statement |
-| `LICENSE` | Apache 2.0 (inherited from the course skeleton) |
+| `project-brief.pdf` | Project brief |
+| `LICENSE` | Apache 2.0 |
